@@ -1,0 +1,23 @@
+#cloudbuild.yaml
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "gcr.io/react-express-docker/react-express-docker:$SHORT_SHA",
+        ".",
+      ]
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      ["push", "gcr.io/react-express-docker/react-express-docker:$SHORT_SHA"]
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      [
+        "run",
+        "deploy",
+        "react-express-docker",
+        "--region=us-east1",
+        "--platform=managed",
+        "--image=gcr.io/react-express-docker/react-express-docker:$SHORT_SHA",
+      ]
